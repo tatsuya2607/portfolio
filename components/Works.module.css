@@ -180,6 +180,36 @@
 .link svg { transition: transform var(--dur-base) var(--ease-out); }
 .card:hover .link svg { transform: translateX(4px); }
 
+.linkMuted {
+  color: var(--color-text-2);
+  font-style: italic;
+}
+
+.disabled { cursor: default; }
+.disabled:hover {
+  border-color: var(--color-border);
+  box-shadow: none;
+  transform: none;
+}
+.disabled .wordmark { opacity: 0.6; }
+
+.comingBadge {
+  position: absolute;
+  top: 14px; right: 16px;
+  z-index: 2;
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-purple);
+  padding: 4px 8px;
+  border: 1px solid var(--color-purple);
+  border-radius: var(--radius-xs);
+  background: var(--color-purple-tint);
+  backdrop-filter: blur(4px);
+}
+
 @media (max-width: 960px) { .grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) {
   .works { padding: 96px 0 112px; }

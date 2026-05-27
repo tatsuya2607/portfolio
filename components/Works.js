@@ -12,7 +12,7 @@ const projects = [
     title: "Gmail AI Reply",
     desc: "Web app that automatically generates email replies using Claude AI. Features multi-account Gmail management, OAuth authentication, and streaming output.",
     tags: ["Next.js", "Claude API", "Gmail API", "TypeScript"],
-    href: "#",
+    href: "https://github.com/tatsuya2607/Gmail-AI",
   },
   {
     id: "culture",
@@ -21,7 +21,7 @@ const projects = [
     title: "Japanese Culture Site",
     desc: "A visually engaging website introducing Japanese culture and traditions, built with modern frontend technologies.",
     tags: ["React", "Tailwind CSS", "Vite"],
-    href: "#",
+    href: "https://github.com/tatsuya2607/JSA-website",
   },
   {
     id: "matcha",
@@ -30,26 +30,28 @@ const projects = [
     title: "Matcha Cafe LP",
     desc: "A landing page for a matcha cafe, focused on clean layout and smooth user experience.",
     tags: ["HTML", "CSS", "JavaScript"],
-    href: "#",
+    href: null,
+    comingSoon: true,
   },
 ];
 
 function WorkCard({ project, delay }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
-  return (
-    <motion.a
-      ref={ref}
-      href={project.href}
-      className={`${styles.card} ${styles[project.id]}`}
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-      aria-label={`View project: ${project.title}`}
-    >
+  const isLink = !!project.href;
+  const commonProps = {
+    ref,
+    className: `${styles.card} ${styles[project.id]} ${project.comingSoon ? styles.disabled : ""}`,
+    initial: { opacity: 0, y: 24 },
+    animate: inView ? { opacity: 1, y: 0 } : {},
+    transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
+  };
+  const Inner = (
+    <>
       <div className={styles.thumb} aria-hidden="true">
         <span className={styles.index}>{project.index}</span>
         <span className={styles.wordmark}>{project.wordmark}</span>
+        {project.comingSoon && <span className={styles.comingBadge}>Coming Soon</span>}
       </div>
       <div className={styles.body}>
         <h3 className={styles.title}>{project.title}</h3>
@@ -57,14 +59,37 @@ function WorkCard({ project, delay }) {
         <div className={styles.tags}>
           {project.tags.map((t) => <span key={t} className="tag" style={{ fontSize: "11px", padding: "5px 10px" }}>{t}</span>)}
         </div>
-        <span className={styles.link}>
-          View Project
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M5 12h14M13 5l7 7-7 7" />
-          </svg>
-        </span>
+        {isLink ? (
+          <span className={styles.link}>
+            View on GitHub
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M7 17 17 7M9 7h8v8" />
+            </svg>
+          </span>
+        ) : (
+          <span className={`${styles.link} ${styles.linkMuted}`}>Repository coming soon</span>
+        )}
       </div>
-    </motion.a>
+    </>
+  );
+
+  if (isLink) {
+    return (
+      <motion.a
+        {...commonProps}
+        href={project.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`View ${project.title} on GitHub`}
+      >
+        {Inner}
+      </motion.a>
+    );
+  }
+  return (
+    <motion.div {...commonProps} aria-label={`${project.title} (coming soon)`}>
+      {Inner}
+    </motion.div>
   );
 }
 
