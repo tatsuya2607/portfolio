@@ -1,15 +1,20 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./LoadingScreen.module.css";
 
 export default function LoadingScreen({ onComplete }) {
   const [done, setDone] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
 
   useEffect(() => {
     const t = setTimeout(() => {
       setDone(true);
-      onComplete?.();
+      onCompleteRef.current?.();
     }, 2000);
     return () => clearTimeout(t);
   }, []);
