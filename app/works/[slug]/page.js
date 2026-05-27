@@ -65,12 +65,46 @@ export default async function ProjectPage({ params }) {
           </div>
         </header>
 
+        {project.cover && (
+          <figure className={styles.cover}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={project.cover} alt={`${project.title} preview`} loading="lazy" />
+          </figure>
+        )}
+
         <section className={styles.section}>
           <div className={styles.eyebrow}>— Overview</div>
           {project.overview.map((p, i) => (
             <p key={i} className={styles.body}>{p}</p>
           ))}
         </section>
+
+        {project.media?.length > 0 && (
+          <section className={styles.section}>
+            <div className={styles.eyebrow}>— Screenshots</div>
+            <div className={styles.gallery}>
+              {project.media.map((m, i) => (
+                <figure key={i} className={styles.galleryItem}>
+                  {m.type === "video" ? (
+                    <video
+                      src={m.src}
+                      poster={m.poster}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      aria-label={m.alt || ""}
+                    />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={m.src} alt={m.alt || ""} loading="lazy" />
+                  )}
+                  {m.caption && <figcaption>{m.caption}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className={styles.section}>
           <div className={styles.eyebrow}>— Tech Stack</div>
