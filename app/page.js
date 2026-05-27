@@ -21,7 +21,7 @@ export default function Home() {
       <footer className={styles.footer}>
         <div className="container">
           <div className={styles.footerInner}>
-            <span className={styles.copy}>© 2025 Tatsuya Ogawa</span>
+            <span className={styles.copy}>© 2026 Tatsuya Ogawa</span>
             <span className={styles.mark}>Built from the void</span>
           </div>
         </div>

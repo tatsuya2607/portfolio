@@ -7,7 +7,7 @@ import SectionDivider from "./SectionDivider";
 const skills = {
   "Languages & Markup": ["HTML", "CSS", "JavaScript", "Python", "C++"],
   "Frameworks & Libraries": ["React", "Next.js", "Flutter"],
-  "Tools": ["Git"],
+  "Tools": ["Git", "VS Code"],
 };
 
 function FadeIn({ children, delay = 0 }) {
