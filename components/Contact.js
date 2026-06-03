@@ -3,6 +3,8 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import styles from "./Contact.module.css";
 import SectionDivider from "./SectionDivider";
+import { useLanguage } from "./LanguageContext";
+import { translations } from "@/lib/translations";
 
 const contacts = [
   {
@@ -31,6 +33,8 @@ const contacts = [
 export default function Contact() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
+  const { lang } = useLanguage();
+  const t = translations[lang].contact;
   return (
     <section className={styles.contact} id="contact">
       <SectionDivider colorA="rgba(124,58,237,0.55)" colorB="rgba(6,182,212,0.55)" />
@@ -42,9 +46,9 @@ export default function Contact() {
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className={styles.eyebrow}>— Contact</div>
-        <h2 className={styles.heading}>Get In <em>Touch</em></h2>
-        <p className={styles.sub}>Feel free to reach out for project inquiries or just to say hello.</p>
+        <div className={styles.eyebrow}>{t.eyebrow}</div>
+        <h2 className={styles.heading}>{t.heading.pre}<em>{t.heading.accent}</em>{t.heading.post}</h2>
+        <p className={styles.sub}>{t.sub}</p>
         <div className={styles.cards}>
           {contacts.map((c) => (
             <a key={c.label} className={styles.card} href={c.href} target={c.label === "GitHub" ? "_blank" : undefined} rel={c.label === "GitHub" ? "noopener noreferrer" : undefined}>

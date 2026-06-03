@@ -1,10 +1,38 @@
 "use client";
 import { useEffect, useState } from "react";
 import styles from "./Nav.module.css";
+import { useLanguage } from "./LanguageContext";
+import { translations } from "@/lib/translations";
+
+function LangToggle({ className }) {
+  const { lang, setLang } = useLanguage();
+  return (
+    <div className={`${styles.langToggle} ${className || ""}`} role="group" aria-label="Language">
+      <button
+        type="button"
+        className={lang === "en" ? styles.langActive : ""}
+        aria-pressed={lang === "en"}
+        onClick={() => setLang("en")}
+      >
+        EN
+      </button>
+      <button
+        type="button"
+        className={lang === "ja" ? styles.langActive : ""}
+        aria-pressed={lang === "ja"}
+        onClick={() => setLang("ja")}
+      >
+        日本語
+      </button>
+    </div>
+  );
+}
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { lang } = useLanguage();
+  const t = translations[lang].nav;
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -26,9 +54,10 @@ export default function Nav() {
       <div className={`container ${styles.inner}`}>
         <a className={styles.logo} href="#top" onClick={close}>Tatsuya Ogawa</a>
         <div className={styles.links}>
-          <a href="#about">About</a>
-          <a href="#works">Works</a>
-          <a href="#contact">Contact</a>
+          <a href="#about">{t.about}</a>
+          <a href="#works">{t.works}</a>
+          <a href="#contact">{t.contact}</a>
+          <LangToggle />
         </div>
         <button
           type="button"
@@ -46,9 +75,10 @@ export default function Nav() {
         className={`${styles.mobile} ${open ? styles.mobileOpen : ""}`}
         aria-hidden={!open}
       >
-        <a href="#about" onClick={close}>About</a>
-        <a href="#works" onClick={close}>Works</a>
-        <a href="#contact" onClick={close}>Contact</a>
+        <a href="#about" onClick={close}>{t.about}</a>
+        <a href="#works" onClick={close}>{t.works}</a>
+        <a href="#contact" onClick={close}>{t.contact}</a>
+        <LangToggle className={styles.langToggleMobile} />
       </div>
     </nav>
   );

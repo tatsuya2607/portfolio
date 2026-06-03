@@ -3,12 +3,14 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import styles from "./About.module.css";
 import SectionDivider from "./SectionDivider";
+import { useLanguage } from "./LanguageContext";
+import { translations } from "@/lib/translations";
 
-const skills = {
-  "Languages & Markup": ["HTML", "CSS", "JavaScript", "Python", "C++"],
-  "Frameworks & Libraries": ["React", "Next.js", "Flutter"],
-  "Tools": ["Git", "VS Code"],
-};
+const skillGroups = [
+  { id: "languages", items: ["HTML", "CSS", "JavaScript", "Python", "C++"] },
+  { id: "frameworks", items: ["React", "Next.js", "Flutter"] },
+  { id: "tools", items: ["Git", "VS Code"] },
+];
 
 function FadeIn({ children, delay = 0 }) {
   const ref = useRef(null);
@@ -25,7 +27,7 @@ function FadeIn({ children, delay = 0 }) {
   );
 }
 
-function BadgeGroup({ group, tags, groupIndex }) {
+function BadgeGroup({ label, tags, groupIndex }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
@@ -36,7 +38,7 @@ function BadgeGroup({ group, tags, groupIndex }) {
         animate={inView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.4, delay: groupIndex * 0.1, ease: [0.22, 1, 0.36, 1] }}
       >
-        {group}
+        {label}
       </motion.div>
       <div className={styles.stackTags}>
         {tags.map((tag, i) => (
@@ -60,6 +62,8 @@ function BadgeGroup({ group, tags, groupIndex }) {
 }
 
 export default function About() {
+  const { lang } = useLanguage();
+  const t = translations[lang].about;
   return (
     <section className={styles.about} id="about">
       <SectionDivider colorA="rgba(124,58,237,0.6)" colorB="rgba(6,182,212,0.6)" />
@@ -67,19 +71,27 @@ export default function About() {
       <div className="container">
         <div className={styles.grid}>
           <FadeIn>
-            <div className={styles.eyebrow}>— About</div>
-            <h2 className={styles.heading}>About <em>Me</em></h2>
+            <div className={styles.eyebrow}>{t.eyebrow}</div>
+            <h2 className={styles.heading}>
+              {t.heading.pre}
+              <em>{t.heading.accent}</em>
+              {t.heading.post}
+            </h2>
             <div className={styles.bio}>
-              <p>I&apos;m a <strong>frontend developer</strong> with a passion for building modern, visually engaging web experiences.</p>
-              <p>Currently completing my <strong>CS degree</strong>, I specialize in <strong>React</strong> and <strong>Next.js</strong> — crafting interfaces where clean code meets thoughtful design.</p>
-              <p>I enjoy turning complex ideas into smooth, intuitive products that live on the web.</p>
+              {t.bio.map((para, i) => (
+                <p key={i}>
+                  {para.map((seg, j) =>
+                    seg.strong ? <strong key={j}>{seg.t}</strong> : <span key={j}>{seg.t}</span>
+                  )}
+                </p>
+              ))}
             </div>
           </FadeIn>
 
           <FadeIn delay={0.15}>
-            <h3 className={styles.stackTitle}>Tech Stack</h3>
-            {Object.entries(skills).map(([group, tags], i) => (
-              <BadgeGroup key={group} group={group} tags={tags} groupIndex={i} />
+            <h3 className={styles.stackTitle}>{t.stackTitle}</h3>
+            {skillGroups.map((group, i) => (
+              <BadgeGroup key={group.id} label={t.groups[group.id]} tags={group.items} groupIndex={i} />
             ))}
           </FadeIn>
         </div>

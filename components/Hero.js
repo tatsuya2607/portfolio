@@ -3,6 +3,8 @@ import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import styles from "./Hero.module.css";
 import TextReveal from "./TextReveal";
+import { useLanguage } from "./LanguageContext";
+import { translations } from "@/lib/translations";
 
 function generateStars(count = 140) {
   let seed = 1337;
@@ -30,6 +32,9 @@ export default function Hero() {
   const glowRef = useRef(null);
   const starsRef = useRef(null);
   const mouseOffsetRef = useRef({ x: 0, y: 0 });
+
+  const { lang } = useLanguage();
+  const t = translations[lang].hero;
 
   const heroRef = useRef(null);
   const { scrollY } = useScroll();
@@ -89,7 +94,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          Frontend Developer
+          {t.label}
         </motion.div>
         <motion.h1
           className={styles.title}
@@ -100,7 +105,7 @@ export default function Hero() {
           Tatsuya Ogawa
         </motion.h1>
         <p className={styles.intro}>
-          <TextReveal text="Building digital experiences from the void." by="word" delay={1.0} />
+          <TextReveal key={lang} text={t.intro} by="word" delay={1.0} />
         </p>
         <motion.div
           className={styles.cta}
@@ -109,17 +114,17 @@ export default function Hero() {
           transition={{ duration: 0.6, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
         >
           <a className={styles.btnPrimary} href="#works">
-            View My Work
+            {t.ctaPrimary}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M5 12h14M13 5l7 7-7 7" />
             </svg>
           </a>
-          <a className={styles.btnSecondary} href="#contact">Contact Me</a>
+          <a className={styles.btnSecondary} href="#contact">{t.ctaSecondary}</a>
         </motion.div>
       </div>
 
       <div className={styles.scrollCue} aria-hidden="true">
-        <span>Scroll</span>
+        <span>{t.scroll}</span>
         <span className={styles.scrollLine} />
       </div>
     </section>
