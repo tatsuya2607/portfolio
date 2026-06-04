@@ -15,6 +15,7 @@ const cards = [
   { id: "gmail", index: "01", wordmark: "Gmail AI", tags: ["Next.js", "Claude API", "Gmail API", "TypeScript"] },
   { id: "culture", index: "02", wordmark: "JSA Site", tags: ["React", "Vite", "Tailwind CSS", "Firebase"] },
   { id: "matcha", index: "03", wordmark: "Matcha LP", tags: ["Next.js", "TypeScript", "next-intl", "i18n"] },
+  { id: "aura", index: "04", wordmark: "Aura Buds", tags: ["HTML5", "CSS3", "JavaScript", "Canvas"] },
 ];
 
 function WorkCard({ project, delay }) {
