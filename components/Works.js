@@ -14,7 +14,7 @@ const detailById = Object.fromEntries(detailedProjects.map((p) => [p.id, p]));
 const cards = [
   { id: "gmail", index: "01", wordmark: "Gmail AI", tags: ["Next.js", "Claude API", "Gmail API", "TypeScript"] },
   { id: "culture", index: "02", wordmark: "JSA Site", tags: ["React", "Vite", "Tailwind CSS", "Firebase"] },
-  { id: "matcha", index: "03", wordmark: "Matcha LP", tags: ["HTML", "CSS", "JavaScript"], comingSoon: true },
+  { id: "matcha", index: "03", wordmark: "Matcha LP", tags: ["Next.js", "TypeScript", "next-intl", "i18n"] },
 ];
 
 function WorkCard({ project, delay }) {
