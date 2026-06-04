@@ -7,9 +7,9 @@ import { useLanguage } from "./LanguageContext";
 import { translations } from "@/lib/translations";
 
 const skillGroups = [
-  { id: "languages", items: ["HTML", "CSS", "JavaScript", "Python", "C++"] },
+  { id: "languages", items: ["HTML", "CSS", "JavaScript", "Python", "C++, Java, C#, PHP, MySQL"] },
   { id: "frameworks", items: ["React", "Next.js", "Flutter"] },
-  { id: "tools", items: ["Git", "VS Code"] },
+  { id: "tools", items: ["Git", "VS Code, Cursor"] },
 ];
 
 function FadeIn({ children, delay = 0 }) {
