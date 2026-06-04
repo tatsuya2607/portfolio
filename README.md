@@ -2,7 +2,7 @@
 
 Personal portfolio website built with Next.js.
 
-**Live:** https://portfolio-next-nine-smoky.vercel.app
+**Live:**  https://portfolio-next-nine-smoky.vercel.app
 
 ## Tech Stack
 
