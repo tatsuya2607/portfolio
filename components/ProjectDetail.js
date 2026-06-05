@@ -52,10 +52,14 @@ export default function ProjectDetail({ project }) {
           </div>
         </header>
 
-        {project.cover && (
+        {(project.heroVideo || project.cover) && (
           <figure className={styles.cover}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={project.cover} alt={`${content.title} preview`} loading="lazy" />
+            {project.heroVideo ? (
+              <video src={project.heroVideo} poster={project.cover} autoPlay loop muted playsInline aria-label={`${content.title} demo`} />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={project.cover} alt={`${content.title} preview`} loading="lazy" />
+            )}
           </figure>
         )}
 
