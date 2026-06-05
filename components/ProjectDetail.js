@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import styles from "../app/works/[slug]/page.module.css";
 import { useLanguage } from "./LanguageContext";
@@ -19,6 +20,20 @@ export default function ProjectDetail({ project }) {
   const { lang } = useLanguage();
   const t = translations[lang].detail;
   const content = project[lang] || project.en;
+
+  // Lightbox: click a gallery image to read it full-size without browser zoom.
+  const [zoomed, setZoomed] = useState(null);
+  const closeZoom = useCallback(() => setZoomed(null), []);
+  useEffect(() => {
+    if (!zoomed) return;
+    const onKey = (e) => e.key === "Escape" && closeZoom();
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [zoomed, closeZoom]);
 
   return (
     <article className={styles.page}>
@@ -79,8 +94,15 @@ export default function ProjectDetail({ project }) {
                   {m.type === "video" ? (
                     <video src={m.src} poster={m.poster} autoPlay loop muted playsInline aria-label={m.alt || ""} />
                   ) : (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={m.src} alt={m.alt || ""} loading="lazy" />
+                    <button
+                      type="button"
+                      className={styles.galleryZoom}
+                      onClick={() => setZoomed(m)}
+                      aria-label={`${m.alt || t.screenshots} — ${t.enlarge}`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={m.src} alt={m.alt || ""} loading="lazy" />
+                    </button>
                   )}
                   {m.caption && <figcaption>{m.caption}</figcaption>}
                 </figure>
@@ -130,6 +152,27 @@ export default function ProjectDetail({ project }) {
           <BackLink label={t.back} />
         </footer>
       </div>
+
+      {zoomed && (
+        <div
+          className={styles.lightbox}
+          onClick={closeZoom}
+          role="dialog"
+          aria-modal="true"
+          aria-label={zoomed.alt || t.screenshots}
+        >
+          <button type="button" className={styles.lightboxClose} onClick={closeZoom} aria-label={t.close}>
+            ×
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={zoomed.src}
+            alt={zoomed.alt || ""}
+            className={styles.lightboxImg}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </article>
   );
 }

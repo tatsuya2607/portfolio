@@ -163,6 +163,69 @@
   color: var(--color-text-2);
   border-top: 1px solid var(--color-border);
 }
+.galleryZoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  font: inherit;
+  color: inherit;
+}
+
+/* Lightbox: click a screenshot to read it full-size without browser zoom. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: rgba(2, 6, 23, 0.86);
+  backdrop-filter: blur(4px);
+  cursor: zoom-out;
+  animation: lightboxIn var(--dur-base) var(--ease-out);
+}
+.lightboxImg {
+  max-width: min(1400px, 96vw);
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  cursor: default;
+}
+.lightboxClose {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-1);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+}
+.lightboxClose:hover {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 18px var(--color-cyan-glow);
+}
+@keyframes lightboxIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 .section {
   padding: 40px 0;
