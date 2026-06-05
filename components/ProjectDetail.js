@@ -24,12 +24,17 @@ export default function ProjectDetail({ project }) {
   // Lightbox: a photobook-style viewer — click the hero or a screenshot to open
   // it full screen, browse with arrows/keys/thumbnails, and click an image to
   // zoom in for detail. The hero video is the first "page" of the collection.
-  const slides = [
-    ...(project.heroVideo
-      ? [{ type: "video", src: project.heroVideo, poster: project.cover, alt: `${content.title} demo` }]
-      : []),
-    ...(project.media || []).filter((m) => m.type === "image"),
-  ];
+  const galleryImages = (project.media || []).filter((m) => m.type === "image");
+  const heroSlide = project.heroVideo
+    ? { type: "video", src: project.heroVideo, poster: project.cover, alt: `${content.title} demo` }
+    : project.cover && !galleryImages.some((m) => m.src === project.cover)
+      ? { type: "image", src: project.cover, alt: `${content.title} preview` }
+      : null;
+  const slides = [...(heroSlide ? [heroSlide] : []), ...galleryImages];
+  // Which slide the hero (video or cover image) opens to.
+  const heroIndex = slides.findIndex((s) =>
+    project.heroVideo ? s.src === project.heroVideo : s.src === project.cover
+  );
   const [lbIndex, setLbIndex] = useState(null);
   const [lbZoom, setLbZoom] = useState(false);
   const lbOpen = lbIndex !== null;
@@ -91,22 +96,22 @@ export default function ProjectDetail({ project }) {
           </div>
         </header>
 
-        {(project.heroVideo || project.cover) && (
+        {(project.heroVideo || project.cover) && heroIndex >= 0 && (
           <figure className={styles.cover}>
-            {project.heroVideo ? (
-              <button
-                type="button"
-                className={styles.heroZoom}
-                onClick={() => goTo(0)}
-                aria-label={`${content.title} demo — ${t.enlarge}`}
-              >
+            <button
+              type="button"
+              className={styles.heroZoom}
+              onClick={() => goTo(heroIndex)}
+              aria-label={`${content.title} ${project.heroVideo ? "demo" : "preview"} — ${t.enlarge}`}
+            >
+              {project.heroVideo ? (
                 <video src={project.heroVideo} poster={project.cover} autoPlay loop muted playsInline />
-                <span className={styles.heroHint} aria-hidden="true">⤢</span>
-              </button>
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={project.cover} alt={`${content.title} preview`} loading="lazy" />
-            )}
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={project.cover} alt={`${content.title} preview`} loading="lazy" />
+              )}
+              <span className={styles.heroHint} aria-hidden="true">⤢</span>
+            </button>
           </figure>
         )}
 
