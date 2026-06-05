@@ -221,6 +221,51 @@
   width: min(2560px, 190vw);
   cursor: zoom-out;
 }
+.lightboxVideo {
+  display: block;
+  max-width: min(1500px, 100%);
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  background: #000;
+}
+
+/* Clickable hero (opens the lightbox at the demo video). */
+.heroZoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  position: relative;
+  line-height: 0;
+}
+.heroHint {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(2, 6, 23, 0.55);
+  color: #fff;
+  font-size: 16px;
+  line-height: 34px;
+  text-align: center;
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+  pointer-events: none;
+}
+.heroZoom:hover .heroHint,
+.heroZoom:focus-visible .heroHint {
+  opacity: 1;
+}
 .lightboxClose {
   position: fixed;
   top: 18px;
@@ -312,6 +357,18 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.lightboxThumbVideo { position: relative; }
+.lightboxThumbPlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #fff;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
 }
 @keyframes lightboxIn {
   from { opacity: 0; }

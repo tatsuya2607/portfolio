@@ -21,21 +21,27 @@ export default function ProjectDetail({ project }) {
   const t = translations[lang].detail;
   const content = project[lang] || project.en;
 
-  // Lightbox: a photobook-style viewer — click a screenshot to open it full
-  // screen, browse with arrows/keys, and click again to zoom in for detail.
-  const images = (project.media || []).filter((m) => m.type === "image");
+  // Lightbox: a photobook-style viewer — click the hero or a screenshot to open
+  // it full screen, browse with arrows/keys/thumbnails, and click an image to
+  // zoom in for detail. The hero video is the first "page" of the collection.
+  const slides = [
+    ...(project.heroVideo
+      ? [{ type: "video", src: project.heroVideo, poster: project.cover, alt: `${content.title} demo` }]
+      : []),
+    ...(project.media || []).filter((m) => m.type === "image"),
+  ];
   const [lbIndex, setLbIndex] = useState(null);
   const [lbZoom, setLbZoom] = useState(false);
   const lbOpen = lbIndex !== null;
-  const current = lbOpen ? images[lbIndex] : null;
+  const current = lbOpen ? slides[lbIndex] : null;
 
   const closeLb = useCallback(() => setLbIndex(null), []);
   const goTo = useCallback(
     (i) => {
       setLbZoom(false);
-      setLbIndex((i + images.length) % images.length);
+      setLbIndex((i + slides.length) % slides.length);
     },
-    [images.length]
+    [slides.length]
   );
 
   useEffect(() => {
@@ -88,7 +94,15 @@ export default function ProjectDetail({ project }) {
         {(project.heroVideo || project.cover) && (
           <figure className={styles.cover}>
             {project.heroVideo ? (
-              <video src={project.heroVideo} poster={project.cover} autoPlay loop muted playsInline aria-label={`${content.title} demo`} />
+              <button
+                type="button"
+                className={styles.heroZoom}
+                onClick={() => goTo(0)}
+                aria-label={`${content.title} demo — ${t.enlarge}`}
+              >
+                <video src={project.heroVideo} poster={project.cover} autoPlay loop muted playsInline />
+                <span className={styles.heroHint} aria-hidden="true">⤢</span>
+              </button>
             ) : (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={project.cover} alt={`${content.title} preview`} loading="lazy" />
@@ -115,7 +129,7 @@ export default function ProjectDetail({ project }) {
                     <button
                       type="button"
                       className={styles.galleryZoom}
-                      onClick={() => goTo(images.indexOf(m))}
+                      onClick={() => goTo(slides.indexOf(m))}
                       aria-label={`${m.alt || t.screenshots} — ${t.enlarge}`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -183,13 +197,13 @@ export default function ProjectDetail({ project }) {
             ×
           </button>
 
-          {images.length > 1 && (
+          {slides.length > 1 && (
             <div className={styles.lightboxCount} onClick={(e) => e.stopPropagation()}>
-              {lbIndex + 1} / {images.length}
+              {lbIndex + 1} / {slides.length}
             </div>
           )}
 
-          {images.length > 1 && (
+          {slides.length > 1 && (
             <button
               type="button"
               className={`${styles.lightboxNav} ${styles.lightboxPrev}`}
@@ -204,17 +218,30 @@ export default function ProjectDetail({ project }) {
             className={`${styles.lightboxStage} ${lbZoom ? styles.lightboxStageZoom : ""}`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={current.src}
-              alt={current.alt || ""}
-              className={`${styles.lightboxImg} ${lbZoom ? styles.lightboxImgZoom : ""}`}
-              onClick={() => setLbZoom((z) => !z)}
-              title={lbZoom ? t.close : t.enlarge}
-            />
+            {current.type === "video" ? (
+              <video
+                src={current.src}
+                poster={current.poster}
+                className={styles.lightboxVideo}
+                controls
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={current.src}
+                alt={current.alt || ""}
+                className={`${styles.lightboxImg} ${lbZoom ? styles.lightboxImgZoom : ""}`}
+                onClick={() => setLbZoom((z) => !z)}
+                title={lbZoom ? t.close : t.enlarge}
+              />
+            )}
           </div>
 
-          {images.length > 1 && (
+          {slides.length > 1 && (
             <button
               type="button"
               className={`${styles.lightboxNav} ${styles.lightboxNext}`}
@@ -225,19 +252,20 @@ export default function ProjectDetail({ project }) {
             </button>
           )}
 
-          {images.length > 1 && (
+          {slides.length > 1 && (
             <div className={styles.lightboxThumbs} onClick={(e) => e.stopPropagation()}>
-              {images.map((m, i) => (
+              {slides.map((m, i) => (
                 <button
                   key={i}
                   type="button"
-                  className={`${styles.lightboxThumb} ${i === lbIndex ? styles.lightboxThumbActive : ""}`}
+                  className={`${styles.lightboxThumb} ${i === lbIndex ? styles.lightboxThumbActive : ""} ${m.type === "video" ? styles.lightboxThumbVideo : ""}`}
                   onClick={() => goTo(i)}
                   aria-label={`${m.alt || t.screenshots} ${i + 1}`}
                   aria-current={i === lbIndex}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.src} alt="" loading="lazy" />
+                  <img src={m.type === "video" ? m.poster : m.src} alt="" loading="lazy" />
+                  {m.type === "video" && <span className={styles.lightboxThumbPlay} aria-hidden="true">▶</span>}
                 </button>
               ))}
             </div>
