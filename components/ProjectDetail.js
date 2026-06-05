@@ -21,19 +21,37 @@ export default function ProjectDetail({ project }) {
   const t = translations[lang].detail;
   const content = project[lang] || project.en;
 
-  // Lightbox: click a gallery image to read it full-size without browser zoom.
-  const [zoomed, setZoomed] = useState(null);
-  const closeZoom = useCallback(() => setZoomed(null), []);
+  // Lightbox: a photobook-style viewer — click a screenshot to open it full
+  // screen, browse with arrows/keys, and click again to zoom in for detail.
+  const images = (project.media || []).filter((m) => m.type === "image");
+  const [lbIndex, setLbIndex] = useState(null);
+  const [lbZoom, setLbZoom] = useState(false);
+  const lbOpen = lbIndex !== null;
+  const current = lbOpen ? images[lbIndex] : null;
+
+  const closeLb = useCallback(() => setLbIndex(null), []);
+  const goTo = useCallback(
+    (i) => {
+      setLbZoom(false);
+      setLbIndex((i + images.length) % images.length);
+    },
+    [images.length]
+  );
+
   useEffect(() => {
-    if (!zoomed) return;
-    const onKey = (e) => e.key === "Escape" && closeZoom();
+    if (!lbOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") closeLb();
+      else if (e.key === "ArrowLeft") goTo(lbIndex - 1);
+      else if (e.key === "ArrowRight") goTo(lbIndex + 1);
+    };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [zoomed, closeZoom]);
+  }, [lbOpen, lbIndex, goTo, closeLb]);
 
   return (
     <article className={styles.page}>
@@ -97,7 +115,7 @@ export default function ProjectDetail({ project }) {
                     <button
                       type="button"
                       className={styles.galleryZoom}
-                      onClick={() => setZoomed(m)}
+                      onClick={() => goTo(images.indexOf(m))}
                       aria-label={`${m.alt || t.screenshots} — ${t.enlarge}`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -153,24 +171,77 @@ export default function ProjectDetail({ project }) {
         </footer>
       </div>
 
-      {zoomed && (
+      {lbOpen && (
         <div
           className={styles.lightbox}
-          onClick={closeZoom}
+          onClick={closeLb}
           role="dialog"
           aria-modal="true"
-          aria-label={zoomed.alt || t.screenshots}
+          aria-label={current.alt || t.screenshots}
         >
-          <button type="button" className={styles.lightboxClose} onClick={closeZoom} aria-label={t.close}>
+          <button type="button" className={styles.lightboxClose} onClick={closeLb} aria-label={t.close}>
             ×
           </button>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={zoomed.src}
-            alt={zoomed.alt || ""}
-            className={styles.lightboxImg}
+
+          {images.length > 1 && (
+            <div className={styles.lightboxCount} onClick={(e) => e.stopPropagation()}>
+              {lbIndex + 1} / {images.length}
+            </div>
+          )}
+
+          {images.length > 1 && (
+            <button
+              type="button"
+              className={`${styles.lightboxNav} ${styles.lightboxPrev}`}
+              onClick={(e) => { e.stopPropagation(); goTo(lbIndex - 1); }}
+              aria-label={t.prev}
+            >
+              ‹
+            </button>
+          )}
+
+          <div
+            className={`${styles.lightboxStage} ${lbZoom ? styles.lightboxStageZoom : ""}`}
             onClick={(e) => e.stopPropagation()}
-          />
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={current.src}
+              alt={current.alt || ""}
+              className={`${styles.lightboxImg} ${lbZoom ? styles.lightboxImgZoom : ""}`}
+              onClick={() => setLbZoom((z) => !z)}
+              title={lbZoom ? t.close : t.enlarge}
+            />
+          </div>
+
+          {images.length > 1 && (
+            <button
+              type="button"
+              className={`${styles.lightboxNav} ${styles.lightboxNext}`}
+              onClick={(e) => { e.stopPropagation(); goTo(lbIndex + 1); }}
+              aria-label={t.next}
+            >
+              ›
+            </button>
+          )}
+
+          {images.length > 1 && (
+            <div className={styles.lightboxThumbs} onClick={(e) => e.stopPropagation()}>
+              {images.map((m, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className={`${styles.lightboxThumb} ${i === lbIndex ? styles.lightboxThumbActive : ""}`}
+                  onClick={() => goTo(i)}
+                  aria-label={`${m.alt || t.screenshots} ${i + 1}`}
+                  aria-current={i === lbIndex}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.src} alt="" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </article>
