@@ -16,6 +16,7 @@ const cards = [
   { id: "culture", index: "02", wordmark: "JSA Site", tags: ["React", "Vite", "Tailwind CSS", "Firebase"] },
   { id: "matcha", index: "03", wordmark: "Matcha LP", tags: ["Next.js", "TypeScript", "next-intl", "i18n"] },
   { id: "aura", index: "04", wordmark: "Aura Buds", tags: ["HTML5", "CSS3", "JavaScript", "Canvas"] },
+  { id: "planner", index: "05", wordmark: "AI Planner", tags: ["TypeScript", "Claude API", "Notion API", "GitHub Actions"] },
 ];
 
 function WorkCard({ project, delay }) {
