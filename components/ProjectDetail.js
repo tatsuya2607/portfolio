@@ -115,6 +115,20 @@ export default function ProjectDetail({ project }) {
           </figure>
         )}
 
+        {content.facts?.length > 0 && (
+          <section className={styles.section}>
+            <div className={styles.eyebrow}>{t.facts}</div>
+            <dl className={styles.facts}>
+              {content.facts.map((f) => (
+                <div key={f.label} className={styles.factRow}>
+                  <dt className={styles.factLabel}>{f.label}</dt>
+                  <dd className={styles.factValue}>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
         <section className={styles.section}>
           <div className={styles.eyebrow}>{t.overview}</div>
           {content.overview.map((p, i) => (
