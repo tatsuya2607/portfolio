@@ -117,6 +117,12 @@
     radial-gradient(52% 66% at 80% 80%, rgba(124,58,237,0.44), transparent 62%),
     #0a0a0f;
 }
+.aoba .thumb {
+  background:
+    radial-gradient(62% 80% at 30% 24%, rgba(6,182,212,0.46), transparent 62%),
+    radial-gradient(50% 64% at 82% 78%, rgba(124,58,237,0.40), transparent 62%),
+    #0a0a0f;
+}
 
 .wordmark {
   position: absolute;
